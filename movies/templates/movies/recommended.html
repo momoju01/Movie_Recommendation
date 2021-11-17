@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Recommended Movies</h2>
+<br>
+{% for rec_movie in rec_movies %}
+    <h3>{{rec_movie.title}}</h3>
+    <h3>{{rec_movie.vote_average}}</h3>
+    <hr>
+
+{% endfor %}
+
+
+<!-- vue.js -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<!-- lodash cdn-->
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+<script>
+
+</script>
+
+
+{% endblock %}
+
+

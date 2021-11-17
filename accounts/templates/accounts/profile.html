@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ person.username }}의 프로필 페이지</h1>
+  {% with followings=person.followings.all followers=person.followers.all %}
+    <div>
+      <div>
+        팔로잉 : 
+        <span id="stars-cnt">
+          {{ followings|length }}
+        </span> 
+        / 팔로워 : 
+        <span id="fans-cnt">
+          {{ followers|length }}
+        </span>
+      </div>
+      {% if request.user != person %}
+        <div>
+          {% comment %} <form action="{% url 'accounts:follow' person.pk %}" method="POST"> {% endcomment %}
+          <form class='follow-form' data-id="{{person.pk}}">
+            {% csrf_token %}
+            {% if request.user in followers %}
+              <button class='btn btn-warning' id="followBtn">언팔로우</button>
+            {% else %}
+              <button class='btn btn-success' id="followBtn">팔로우</button>
+            {% endif %}
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  {% endwith %}
+
+
+  {% comment %} axios CDN받아오기 {% endcomment %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    //한 사람의 프로필 뿐이니까, form은 querySelector로 가져오깅 querySelectorAll말구!
+    const form = document.querySelector('.follow-form')
+    form.addEventListener('submit', function(event){
+      console.log(event)
+      event.preventDefault()  //이거 하면 뭐가 달라지나?? >> 여기서는 달라지는 것이 없어질 수도 있지만 일단 안전하게 끄고시작!
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+      const starId = event.target.dataset.id
+      axios.post(`http://127.0.0.1:8000/accounts/${starId}/follow/`, {}, {headers: {'X-CSRFToken': csrftoken}})
+      //.then
+      .then(function(response){
+        console.log(response)
+        //{data: {…}, status: 200, statusText: 'OK', headers: {…}, config: {…}, …}
+        console.log(response.data)
+        //{curr_follow: false, count: 0}
+        const fans_countyy = response.data.fans_count
+        const stars_countyy = response.data.stars_count
+        const curr_follow_status = response.data.curr_follow
+        //const unfollowButton = document.querySelector(`#unfollow-${starId}`) //백틱임주의 // 틀린이유: # 아이디선택자로 가져와야
+        const followButton = document.querySelector(`#followBtn`) //백틱임주의
+        //console.log(unfollowButton)
+        //console.log(followButton)
+        if (curr_follow_status){
+          followButton.setAttribute('class', 'btn btn-warning')
+          followButton.innerText = '언팔로우'
+        } else {
+          followButton.setAttribute('class', 'btn btn-success')
+          followButton.innerText = '팔로우'
+        }
+        
+        const starsCount = document.querySelector(`#stars-cnt`)
+        starsCount.innerText = stars_countyy  //위에서받아놓은 countyy값을넣어줌
+        const fansCount = document.querySelector(`#fans-cnt`)
+        fansCount.innerText = fans_countyy//위에서받아놓은 countyy값을넣어줌
+      })
+      .catch((err)=>{
+        if (err.response.status === 401){
+          window.location.href = '/accounts/login/'
+        }
+      })
+    })
+  </script>
+
+
+{% endblock %}

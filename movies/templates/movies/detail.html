@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Detail</h2>
+    <h2>{{movie.title}}</h2>
+    <p>{{movie.release_date}}</p>
+    <p>{{movie.popularity}}</p>
+    <p>{{movie.vote_count}}</p>
+    <p>{{movie.overview}}</p>
+    <img src="{{movie.poster_path}}" alt="">
+    <p>{{movie.poster_path}}</p>
+    {% comment %} views.py의 context 에서 genres를 보냄 / views.py에서 만들어서 변수를 가져다 씀 {% endcomment %}
+    {% for genre in genres %}
+        <p>{{genre}}</p>
+    {% endfor %}
+    {% comment %} <p>{{movie.genres}}</p> {% endcomment %}
+    {% comment %} <p>{{movie.genres_set.all()}}</p> {% endcomment %}
+{% endblock %}
+

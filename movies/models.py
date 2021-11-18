@@ -13,7 +13,7 @@ class Movie(models.Model):
     vote_average = models.FloatField()
     overview = models.TextField()
     poster_path = models.CharField(max_length=200)
-    genres = models.ManyToManyField(Genre, related_name="movie_genre")
+    genre_ids = models.ManyToManyField(Genre, related_name="movie_genre")
     
     def __str__(self):
         return self.title

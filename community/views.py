@@ -1,9 +1,9 @@
+from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from .models import Review, Comment
 from .forms import ReviewForm, CommentForm
-from django.http import HttpResponse
-from django.http.response import JsonResponse
+
 
 @require_GET
 def index(request):
@@ -70,19 +70,12 @@ def like(request, review_pk):
 
         if review.like_users.filter(pk=user.pk).exists():
             review.like_users.remove(user)
-            # 좋아요 여부
             liked = False
         else:
             review.like_users.add(user)
-            # 좋아요 여부
             liked = True
-
-        like_status = {
-            'liked':liked,
-            'count':review.like_users.count(),
-        }
-        # return redirect('community:index')
-        return JsonResponse(like_status)    #좋아요상태를담아서보내줄것
-    # return redirect('accounts:login')
-    return HttpResponse(status=401) #401이 에러인데,
-    #403은 권한(인가)없다, 401은 로그인(인증)이 안되었다, 403은 못들어감
+        return JsonResponse({
+            'liked': liked,
+            'likeCount': review.like_users.count(),
+        })
+    return HttpResponse(status=401)

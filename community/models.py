@@ -4,10 +4,18 @@ from movies.models import Movie
 
 
 class Review(models.Model):
+    RANKS = [
+        (1, '★'),
+        (2, '★★'),
+        (3, '★★★'),
+        (4, '★★★★'),
+        (5, '★★★★★'),
+    ]
+    
     title = models.CharField(max_length=100)
     # movie_title = models.CharField(max_length=50)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    rank = models.IntegerField()
+    rank = models.IntegerField(choices=RANKS, default=5)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

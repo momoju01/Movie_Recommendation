@@ -1,8 +1,22 @@
 {% extends 'base.html' %}
+{% load bootstrap5 %}
+
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'community/style.css' %}">
+{% endblock css %}
+
+
+
 
 {% block content %}
-  <h1>Community</h1>
-  <hr>
+
+
+
+
+
+
+  
   {% for review in reviews %}
     <p>작성자 : <a href="{% url 'accounts:profile' review.user.username %}">{{ review.user }}</a></p>
     <p>글 번호: {{ review.pk }}</p>
@@ -77,4 +91,4 @@
       })
     })
   </script>
-{% endblock %}
+{% endblock content %}

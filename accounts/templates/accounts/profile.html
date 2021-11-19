@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load bootstrap5 %}
 {% block content %}
   <h1>{{ person.username }}의 프로필 페이지</h1>
   {% with followings=person.followings.all followers=person.followers.all %}

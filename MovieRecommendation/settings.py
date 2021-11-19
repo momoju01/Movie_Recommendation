@@ -64,10 +64,10 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    # 'allauth.socialaccount.providers.kakao',
-    # 'allauth.socialaccount.providers.naver'
+    'allauth.socialaccount.providers.naver',
 
     'corsheaders',
+    'bootstrap5',
 
     'rest_framework',
     'rest_auth.registration',
@@ -164,6 +164,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'static',
+# ]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -191,10 +198,8 @@ AUTHENTICATION_BACKENDS = [
 #         }
 #     }
 # }
+
 SITE_ID = 1
-
-
-
 
 import datetime
 
@@ -223,3 +228,4 @@ REST_FRAMEWORK = {
 # 모든 Origin 허용
 # CORS_ORIGIN_ALLOW_ALL = True 없는데 되넹
 CORS_ALLOW_ALL_ORIGINS = True
+

@@ -8,7 +8,6 @@ from django.views.decorators.http import require_POST, require_http_methods
 from .forms import CustomUserCreationForm
 from django.http.response import HttpResponse, JsonResponse
 
-
 @require_http_methods(['GET', 'POST'])
 def signup(request):
     if request.user.is_authenticated:
@@ -26,8 +25,6 @@ def signup(request):
         'form': form,
     }
     return render(request, 'accounts/signup.html', context)
-
-
 
 
 @require_http_methods(['GET', 'POST'])
@@ -61,3 +58,34 @@ def profile(request, username):
         'person': person,
     }
     return render(request, 'accounts/profile.html', context)
+
+
+@require_POST
+def follow(request, user_pk):
+    if request.user.is_authenticated:
+        person = get_object_or_404(get_user_model(), pk=user_pk)
+        user = request.user
+        if person != user:
+            if person.followers.filter(pk=user.pk).exists():
+                # 팔로우 끊음
+                person.followers.remove(user)
+                # 팔로우 여부
+                curr_follow = False
+            else:
+                # 팔로우 신청
+                person.followers.add(user)
+                # 팔로우 여부
+                curr_follow = True
+        follow_status = {
+            'curr_follow': curr_follow,
+            'fans_count':person.followers.count(),
+            'stars_count':person.followings.count(),
+        }
+
+        return JsonResponse(follow_status)
+    return HttpResponse(status=401)
+
+
+
+
+

@@ -64,6 +64,15 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.kakao',
+    # 'allauth.socialaccount.providers.naver'
+
+    'corsheaders',
+
+    'rest_framework',
+    'rest_auth.registration',
+    'rest_framework.authtoken', 
+    'rest_auth',
     
     'django.contrib.admin',
     'django.contrib.auth',
@@ -75,6 +84,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -169,15 +179,47 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    }
-}
+
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'SCOPE': [
+#             'profile',
+#             'email',
+#         ],
+#         'AUTH_PARAMS': {
+#             'access_type': 'online',
+#         }
+#     }
+# }
 SITE_ID = 1
+
+
+
+
+import datetime
+
+JWT_AUTH = {
+    #token의 만료기간이 5분 => 1일로 연장
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1)
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        # 'rest_framework.permissions.IsAuthenticated', # 인증된(로그인한) 사용자가 요청했는지 확인
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication', # JWT 토큰이 올바른(유효한)지 확인
+        # 'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+
+# 특정 Origin만 선택적으로 허용
+# CORS_ALLOWED_ORIGINS = [
+    # 'http://localhost:8080',
+# ]
+
+# 모든 Origin 허용
+# CORS_ORIGIN_ALLOW_ALL = True 없는데 되넹
+CORS_ALLOW_ALL_ORIGINS = True

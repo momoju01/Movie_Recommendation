@@ -8,6 +8,7 @@ from django.views.decorators.http import require_POST, require_http_methods
 from .forms import CustomUserCreationForm
 from django.http.response import HttpResponse, JsonResponse
 
+
 @require_http_methods(['GET', 'POST'])
 def signup(request):
     if request.user.is_authenticated:
@@ -25,6 +26,8 @@ def signup(request):
         'form': form,
     }
     return render(request, 'accounts/signup.html', context)
+
+
 
 
 @require_http_methods(['GET', 'POST'])

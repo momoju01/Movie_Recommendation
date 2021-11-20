@@ -1,19 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Detail</h2>
-    <h2>{{movie.title}}</h2>
-    <p>{{movie.release_date}}</p>
-    <p>{{movie.popularity}}</p>
-    <p>{{movie.vote_count}}</p>
-    <p>{{movie.overview}}</p>
-    <img src="{{movie.poster_path}}" alt="">
+  <h2>Detail</h2>
+  <h2>{{movie.title}}</h2>
+  <p>{{movie.release_date}}</p>
+  <p>{{movie.popularity}}</p>
+  <p>{{movie.vote_count}}</p>
+  <p>{{movie.overview}}</p>
+  <img src="{{movie.poster_path}}" alt="">
+  <p>{{movie.poster_path}}</p>
+  {% comment %} views.py의 context 에서 genres를 보냄 / views.py에서 만들어서 변수를 가져다 씀 {% endcomment %}
+  {% for genre in genres %}
+      <p>{{genre}}</p>
+  {% endfor %}
+
+  <h4>리뷰 목록</h4>
+  <button><a href="{% url 'movies:review_create' movie.pk %}">리뷰 작성</a></button>
+  {% if reviews|length %}
+    <p><b>{{ reviews|length }}개의 리뷰가 있습니다.</b></p>
     
-    {% comment %} views.py의 context 에서 genres를 보냄 / views.py에서 만들어서 변수를 가져다 씀 {% endcomment %}
-    {% for genre in genres %}
-        <p>{{genre}}</p>
-    {% endfor %}
-    {% comment %} <p>{{movie.genres}}</p> {% endcomment %}
-    {% comment %} <p>{{movie.genres_set.all()}}</p> {% endcomment %}
+  {% endif %}
+
+
+  {% for review in reviews %}
+    <div>
+      <h4><a href="{% url 'movies:review_detail' movie.pk review.pk %}">{{ review.title }}</a></h4> 
+      작성자 : <a href="{% url 'accounts:profile' review.user.username %}">{{ review.user }}</a>
+    </div>
+  {% empty %}
+    <p><b>리뷰가 없어요..</b></p>
+  {% endfor %}
+  <hr>
+
+  <a href="{% url 'movies:index' %}">[back]</a>
+
+
 {% endblock %}
 

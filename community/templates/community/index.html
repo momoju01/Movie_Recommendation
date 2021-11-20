@@ -1,21 +1,5 @@
 {% extends 'base.html' %}
-{% load bootstrap5 %}
-
-{% block css %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'community/style.css' %}">
-{% endblock css %}
-
-
-
-
 {% block content %}
-
-
-
-
-
-
   
   {% for review in reviews %}
     <p>작성자 : <a href="{% url 'accounts:profile' review.user.username %}">{{ review.user }}</a></p>
@@ -23,72 +7,8 @@
     <p>글 제목: {{ review.title }}</p>
     <p>글 내용: {{ review.content }}</p>
 
-
-    {% comment %} <form action="{% url 'community:like' review.pk %}" method="POST" class="d-inline"> {% endcomment %}
-    <form class="d-inline like-form" data-id="{{review.pk}}">
-      {% csrf_token %}
-      {% if user in review.like_users.all %}
-        {% comment %} <button class="btn btn-link" id="like-{{review.pk}}">좋아요 취소</button> {% endcomment %}
-        <button class="btn btn-link" id="like-{{review.pk}}"><i class="fas fa-heart fa-lg" style="color:crimson;"></i></button>
-      {% else %}
-        <button class="btn btn-link" id="like-{{review.pk}}"><i class="fas fa-heart fa-lg" style="color:black;"></i></button>
-      {% endif %}
-    </form>
-    <p>
-      <span id="like-count-{{review.pk}}">
-        {{ review.like_users.all|length }}
-      </span>
-     명이 이 글을 좋아합니다.</p>
-    <a href="{% url 'community:detail' review.pk %}">[detail]</a>
+    <a href="{% url 'movies:review_detail' review.movie.pk review.pk %}">[detail]</a>
     <hr>
   {% endfor %}
 
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script>
-    const forms = document.querySelectorAll('.like-form')
-    forms.forEach(function (form){
-      form.addEventListener('submit', function(event){
-        event.preventDefault()
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
-        const reviewId = event.target.dataset.id
-        //하트도 가져오기!
-        const redheartIcon = document.createElement('i')
-        redheartIcon.innerHTML = '<i class="fas fa-heart fa-lg" style="color:crimson;"></i>'
-        const blackheartIcon = document.createElement('i')
-        blackheartIcon.innerHTML = '<i class="fas fa-heart fa-lg" style="color:black;"></i>'
-
-
-        axios.post(`http://127.0.0.1:8000/community/${reviewId}/like/`, {}, {headers: {'X-CSRFToken': csrftoken}})
-        //.then
-        .then(function(response){
-          console.log(response.data)
-          const count = response.data.count
-          const liked = response.data.liked
-          const likeButton = document.querySelector(`#like-${reviewId}`)
-
-          if (liked){
-            //likeButton.innerText = '좋아요 취소'
-            //버튼의 자식태그로 아이콘 넣기!
-            likeButton.innerText = ''
-            likeButton.appendChild(redheartIcon)
-          } else {
-            //likeButton.innerText = '좋아요'
-            //likeButton.innerText = `${blackheartIcon}`
-            likeButton.innerText = ''
-            likeButton.appendChild(blackheartIcon)
-          }
-
-          const likeCount = document.querySelector(`#like-count-${reviewId}`)
-          //likeCount.innerText = `${count}명이 이 글을 좋아합니다.`
-          likeCount.innerText = count
-        })
-        //.catch
-        .catch((err)=>{
-          if (err.response.status === 401){
-            window.location.href = '/accounts/login/'
-          }
-        })
-      })
-    })
-  </script>
 {% endblock content %}

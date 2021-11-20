@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load bootstrap5 %}
+
 {% block content %}
   <h1>{{ person.username }}의 프로필 페이지</h1>
   {% with followings=person.followings.all followers=person.followers.all %}
@@ -29,6 +29,28 @@
       {% endif %}
     </div>
   {% endwith %}
+
+
+  <h2></a>{{ person.username }}가 작성한 게시글</h2>
+  {% for review in person.review_set.all %}
+    <div><a href="{% url 'movies:review_detail' review.movie.pk review.pk %}">{{ review.title }}</a></div><br>
+  {% endfor %}
+
+  <hr>
+
+  <h2>{{ person.username }}가 작성한 댓글</h2>
+  {% for comment in person.comment_set.all %}
+    <div><a href="{% url 'movies:review_detail' comment.review.movie.pk comment.review.pk %}">{{ comment.content }}</a></div>
+  {% endfor %}
+
+  <hr>
+
+  <h2>{{ person.username }}가 좋아요를 누른 게시글</h2>
+  {% for review in person.like_reviews.all %}
+    <div><a href="{% url 'movies:review_detail' review.movie.pk review.pk %}">{{ review.title }}</a></div>
+  {% endfor %}
+
+  <a href="{% url 'movies:index' %}">[back]</a>
 
 
   {% comment %} axios CDN받아오기 {% endcomment %}

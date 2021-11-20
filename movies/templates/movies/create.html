@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
-{% load bootstrap5 %}
+
 {% block content %}
   <h1 class="text-center">CREATE</h1>
+  영화 제목 : {{ movie.title }}
   <form action="" method="POST">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ review_form.as_p }}
     <input type="submit">
   </form>
   <hr>
-  <a href="{% url 'community:index' %}">[back]</a>
+  <a href="{% url 'movies:detail' movie.pk %}">[back]</a>
 {% endblock %}

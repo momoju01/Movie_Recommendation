@@ -15,8 +15,10 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'community:index' %}">community</a>
         </li>
+        
+        <!-- 사용자 정보 -->
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'accounts:profile' user %}">profile</a>
+          <a class="nav-link" href="{% url 'accounts:profile' user %}">{{ user.username }}</a>
         </li>
         <li class="nav-item">
           <form action="{% url 'accounts:logout' %}" method="POST">

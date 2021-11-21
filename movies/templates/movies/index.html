@@ -3,11 +3,11 @@
 {% block content %}
   <h1>Movies</h1>
   {% for movie in movies %}
-      <p>{{movie.pk}}</p>
-      <p>{{movie.title}}</p>
-      <p>{{movie.overview}}</p>
-      <p>vote_average: {{movie.vote_average}}</p>
-      <a href="{% url 'movies:detail' movie.pk %}">[Detail]</a>
+      <h4><a href="{% url 'movies:detail' movie.pk %}">{{movie.title}}</a></h4>
+      <p>개봉일 : {{movie.release_date }}</p>
+      <p>평점 : {{movie.vote_average }}</p>
+      <img src="https://image.tmdb.org/t/p/w300{{movie.poster_path}}" alt=""><br>
+
       <hr>
   {% endfor %}
 {% endblock %}

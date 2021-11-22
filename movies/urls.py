@@ -13,5 +13,4 @@ urlpatterns = [
     path('<int:movie_pk>/<int:review_pk>/comments/create/', views.create_comment, name='create_comment'),
     path('<int:movie_pk>/<int:review_pk>/comments/<int:comment_pk>/delete/', views.comment_delete, name='comment_delete'),
     path('<int:review_pk>/like_review/', views.like_review, name='like_review'),
-    path('recommended/', views.recommended, name='recommended'),
 ]

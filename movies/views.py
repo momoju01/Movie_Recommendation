@@ -1,3 +1,4 @@
+from django.db.models.expressions import OrderBy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from django.views.decorators.http import require_safe
@@ -8,31 +9,54 @@ from django.http.response import JsonResponse
 from django.contrib.auth.decorators import login_required
 
 # from django.core.paginator import Paginator
+from django.db.models import Q
 from random import randint
 
 
 """
-app_name = 'movies'
+흥행작 : -popularity
+내가 4점 이상 준 영화와 같은 장르의 평점 높은 영화 : 
 
-urlpatterns = [
-    path('', views.index, name='index'),
-    path('<int:movie_pk>/', views.movie_detail, name='movie_detail'), #detail > movie_detail
-    path('<int:movie_pk>/create/', views.create_review, name='create_review'), #
-    path('<int:movie_pk>/<int:review_pk>/', views.review_detail, name='review_detail'),#
-    path('<int:movie_pk>/<int:review_pk>/comments/create/', views.create_comment, name='create_comment'),#
-    path('<int:movie_pk>/<int:review_pk>/like/', views.like, name='like'),
-    path('recommended/', views.recommended, name='recommended'),
-]
 
 """
 
 # Create your views here.
+
 @require_safe
 def index(request):
     movies = Movie.objects.all()
+    # 흥행작
+    popular_movies = Movie.objects.order_by('-popularity')[:8]
+    
+    # 장르별 영화 추천(장르별로 장르가 들어간 영화 dict형태로 list에 추가)
+    genres = Genre.objects.all()
+    genre_movies = []
+    for genre in genres:
+        genre_movies.append({
+            genre.name: Movie.objects.filter(genre_ids__in=[genre.id])[:5]
+        })
+
+    # 내 취향 기반
+    rec_movie_genres = []
+    rated_movies = []
+    if request.user.is_authenticated:
+        if Review.objects.filter(user_id=request.user.id).count():
+            reviews = Review.objects.filter(user_id=request.user.id) #유저가 작성한 리뷰 중
+            top_review = reviews.filter(Q(rank=4)|Q(rank=5)).order_by('-rank')[0]  # 평가 높은 리뷰들
+            like_movie_genres = top_review.movie.genre_ids.all()  # 리뷰 높은 영화의 장르들
+            for like_movie_genre in like_movie_genres: 
+                rec_movie_genres.append({
+                    like_movie_genre.name: Movie.objects.filter(genre_ids__in=[like_movie_genre.id])[:5]
+                })
+        else: # 작성한 리뷰 없는 경우 평점순
+            rated_movies = Movie.objects.order_by('-vote_average')
+    else: # 로그인 안 한 경우 평점순
+        rated_movies = Movie.objects.order_by('-vote_average')
     context = {
-        'movies': movies
-        # 장르가 많으니까, 역참조로 따로 
+        'popular_movies': popular_movies,
+        'genre_movies': genre_movies,
+        'rec_movie_genres': rec_movie_genres,
+        'rated_movies': rated_movies,
     }
     return render(request, 'movies/index.html', context)
 
@@ -180,6 +204,23 @@ def like_review(request, review_pk):
     return HttpResponse(status=401) #401이 에러인데,
     #403은 권한(인가)없다, 401은 로그인(인증)이 안되었다, 403은 못들어감
 
+
+
+
+
+# def recommended(request):
+#     reviews = Review.objects.all()
+
+#     movies_gt_8 = []
+#     for review in reviews:
+#         if review['rank'] >= 4:
+#             movies_gt_8.append(review.movie)
+#     context = {
+#         'movies_gt_8': movies_gt_8,
+#     }
+#     return render(request, 'movies/recommended.html', context)
+
+
 # @require_safe
 # def recommended(request):
 #     rec_movies = Movie.objects.order_by('-vote_average')[:8]
@@ -207,20 +248,20 @@ def like_review(request, review_pk):
 #     return render(request, 'movies/recommended.html', context)
 
 
-def recommended(request):
-    """
-     영화목록중 vote_average가 8 이상인 영화목록 출력.
-    """
-    reviews = Review.objects.all()
+# def recommended(request):
+#     """
+#      영화목록중 vote_average가 8 이상인 영화목록 출력.
+#     """
+#     reviews = Review.objects.all()
 
-    movies_gt_8 = []
-    for review in reviews:
-        if review['rank'] >= 4:
-            movies_gt_8.append(review.movie)
-    context = {
-        'movies_gt_8': movies_gt_8,
-    }
-    return render(request, 'movies/recommended.html', context)
+#     movies_gt_8 = []
+#     for review in reviews:
+#         if review['rank'] >= 4:
+#             movies_gt_8.append(review.movie)
+#     context = {
+#         'movies_gt_8': movies_gt_8,
+#     }
+#     return render(request, 'movies/recommended.html', context)
 
 
 # if __name__ == '__main__':

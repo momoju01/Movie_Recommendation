@@ -2,12 +2,68 @@
 
 {% block content %}
   <h1>Movies</h1>
-  {% for movie in movies %}
+  {% comment %} {% for movie in movies %}
       <h4><a href="{% url 'movies:detail' movie.pk %}">{{movie.title}}</a></h4>
       <p>개봉일 : {{movie.release_date }}</p>
       <p>평점 : {{movie.vote_average }}</p>
       <img src="https://image.tmdb.org/t/p/w300{{movie.poster_path}}" alt=""><br>
 
       <hr>
-  {% endfor %}
+  {% endfor %} {% endcomment %}
+  {% comment %} {% for popular_movie in popular_movies %}
+      <h4><a href="{% url 'movies:detail' popular_movie.pk %}">{{popular_movie.title}}</a></h4>
+      <p>개봉일 : {{popular_movie.release_date }}</p>
+      <p>평점 : {{popular_movie.vote_average }}</p>
+      <img src="https://image.tmdb.org/t/p/w300{{popular_movie.poster_path}}" alt=""><br> 
+  {% endfor %}{% endcomment %}
+
+  {% comment %} {% for genre_movie in genre_movies %}
+    {% for genre, movies in genre_movie.items %}
+      {% if movies %}
+        <p>{{ genre }}</p>
+        {% for movie in movies %}
+          <h4><a href="{% url 'movies:detail' movie.pk %}">{{movie.title}}</a></h4>
+          <p>개봉일 : {{ movie.release_date }}</p>
+          <p>평점 : {{ movie.vote_average }}</p>
+          <img src="https://image.tmdb.org/t/p/w300{{movie.poster_path}}" alt=""><br>
+        {% endfor %}
+        <hr>
+      {% endif %}
+    {% endfor %}
+  {% endfor %} {% endcomment %}
+
+  {% if user.is_authenticated %}
+    {% if rec_movie_genres %}
+      {% for rec_movie_genre in rec_movie_genres %}
+        {% for genre, movies in rec_movie_genre.items %}
+          {% if movies %}
+            <p>{{ genre }}</p>
+            {% for movie in movies %}
+              <h4><a href="{% url 'movies:detail' movie.pk %}">{{movie.title}}</a></h4>
+              <p>개봉일 : {{ movie.release_date }}</p>
+              <p>평점 : {{ movie.vote_average }}</p>
+              <img src="https://image.tmdb.org/t/p/w300{{movie.poster_path}}" alt=""><br>
+            {% endfor %}
+            <hr>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+      {% else %}
+        <p>리뷰를 남기시면 취향에 맞는 영화 추천해줘요~~</p>
+        {% for rated_movie in rated_movies %}
+            <h4><a href="{% url 'movies:detail' rated_movie.pk %}">{{rated_movie.title}}</a></h4>
+            <p>개봉일 : {{ rated_movie.release_date }}</p>
+            <p>평점 : {{ rated_movie.vote_average }}</p>
+            <img src="https://image.tmdb.org/t/p/w300{{rated_movie.poster_path}}" alt=""><br>
+        {% endfor %}
+      {% endif %}
+  {% else %}
+    <p>로그인 하시면 취향에 맞는 영화 추천해줘요~~</p>
+    {% for rated_movie in rated_movies %}
+            <h4><a href="{% url 'movies:detail' rated_movie.pk %}">{{rated_movie.title}}</a></h4>
+            <p>개봉일 : {{ rated_movie.release_date }}</p>
+            <p>평점 : {{ rated_movie.vote_average }}</p>
+            <img src="https://image.tmdb.org/t/p/w300{{rated_movie.poster_path}}" alt=""><br>
+    {% endfor %}
+  {% endif %}
 {% endblock %}

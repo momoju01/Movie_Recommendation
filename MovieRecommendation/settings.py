@@ -68,6 +68,7 @@ INSTALLED_APPS = [
 
     'corsheaders',
     'bootstrap5',
+    'django_extensions',
 
     'rest_framework',
     'rest_auth.registration',

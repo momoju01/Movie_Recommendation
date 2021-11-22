@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Home</h2>
+  <h2 id="movieTitle">{{random_movie.title}}</h2>
+
+  <!-- 예고편 -->
+  <div class="d-none d-sm-block mb-5 pb-4">
+    <div id="map" class="d-flex justify-content-center" style="height: 480px; position: relative; overflow: hidden;"> 
+        <iframe id="preview" class="embed-responsive-item mx-auto" frameborder="0" allowfullscreen width="75%" height="100%"></iframe>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  // 유튜브 예고편
+  const API_KEY = 'AIzaSyAD5IVkdRMFP0Iqo8xxmBbNM4Z1S2F8GzU'
+  const YOUTUBE_URL = 'https://www.googleapis.com/youtube/v3/search'
+  const videos = []
+  const video = []
+  const title = document.getElementById('movieTitle').innerText
+  console.log(title)
+  const get_preview = function () {
+    const params = {
+      key: API_KEY,
+      part: 'snippet',
+      type: 'video',
+      q: title+' trailer',
+    }
+    axios.get(YOUTUBE_URL, {params})
+      .then((res)=>{
+        this.videos = res.data.items
+        this.video = this.videos[0]
+        const iframeTag = document.querySelector('#preview')
+        const iframeSrc = `https://www.youtube.com/embed/${this.video.id.videoId}`
+        iframeTag.setAttribute('src', iframeSrc)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+  get_preview()
+  
+
+  </script>
+  {% comment %} <a href="https://serieson.naver.com/search?t=all&q={{ movie.title }}&ot=&so=rel.dsc&fs=movie"> 시리즈온</a> {% endcomment %}
+{% endblock %}

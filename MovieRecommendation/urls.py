@@ -18,8 +18,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from movies import views
 
 urlpatterns = [
+    path('home/', views.home, name="home"), #
     path('admin/', admin.site.urls),
     path('community/', include('community.urls')),
     path('accounts/', include('accounts.urls')),

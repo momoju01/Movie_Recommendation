@@ -10,21 +10,24 @@ from django.contrib.auth.decorators import login_required
 
 # from django.core.paginator import Paginator
 from django.db.models import Q
-from random import randint
-
-
-"""
-흥행작 : -popularity
-내가 4점 이상 준 영화와 같은 장르의 평점 높은 영화 : 
-
-
-"""
+from random import choice, randint
+import random
 
 # Create your views here.
 
+
+def home(request):
+    # 메인에 띄울 동영상(최신 흥행중 랜덤)
+    recent_movies = Movie.objects.order_by('-release_date')[:10]
+    random_movie = random.choice(recent_movies)
+    context = {
+        'random_movie': random_movie,
+    }
+    return render(request, 'movies/home.html', context)
+
+
 @require_safe
 def index(request):
-    movies = Movie.objects.all()
     # 흥행작
     popular_movies = Movie.objects.order_by('-popularity')[:8]
     
@@ -36,7 +39,7 @@ def index(request):
             genre.name: Movie.objects.filter(genre_ids__in=[genre.id])[:5]
         })
 
-    # 내 취향 기반
+    # 내 취향 장르 기반
     rec_movie_genres = []
     rated_movies = []
     if request.user.is_authenticated:
@@ -66,7 +69,7 @@ def index(request):
 def detail(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
     # genres = movie.movie_genre.all()  #역참조 / genre가 선택된 것이 여러개가 있을 수 있으므로! / 중개테이블 안에 있는 것을 모두 들고옴 / 여러개의 장르들! for문
-    genre_ids = movie.genre_ids.all()  #역참조 / genre가 선택된 것이 여러개가 있을 수 있으므로! / 중개테이블 안에 있는 것을 모두 들고옴 / 여러개의 장르들! for문
+    genre_ids = movie.genre_ids.all()  
     reviews = movie.reviews.all()
     context = {
         'movie':movie,
@@ -208,17 +211,6 @@ def like_review(request, review_pk):
 
 
 
-# def recommended(request):
-#     reviews = Review.objects.all()
-
-#     movies_gt_8 = []
-#     for review in reviews:
-#         if review['rank'] >= 4:
-#             movies_gt_8.append(review.movie)
-#     context = {
-#         'movies_gt_8': movies_gt_8,
-#     }
-#     return render(request, 'movies/recommended.html', context)
 
 
 # @require_safe
@@ -247,22 +239,3 @@ def like_review(request, review_pk):
 #     }
 #     return render(request, 'movies/recommended.html', context)
 
-
-# def recommended(request):
-#     """
-#      영화목록중 vote_average가 8 이상인 영화목록 출력.
-#     """
-#     reviews = Review.objects.all()
-
-#     movies_gt_8 = []
-#     for review in reviews:
-#         if review['rank'] >= 4:
-#             movies_gt_8.append(review.movie)
-#     context = {
-#         'movies_gt_8': movies_gt_8,
-#     }
-#     return render(request, 'movies/recommended.html', context)
-
-
-# if __name__ == '__main__':
-#     pprint(rated_movies())

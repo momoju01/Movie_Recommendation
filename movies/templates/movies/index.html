@@ -1,23 +1,31 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'movies/style.css' %}">
+{% endblock css %}
 
 {% block content %}
   <h1>Movies</h1>
-  {% comment %} {% for movie in movies %}
-      <h4><a href="{% url 'movies:detail' movie.pk %}">{{movie.title}}</a></h4>
-      <p>개봉일 : {{movie.release_date }}</p>
-      <p>평점 : {{movie.vote_average }}</p>
-      <img src="https://image.tmdb.org/t/p/w300{{movie.poster_path}}" alt=""><br>
-
-      <hr>
-  {% endfor %} {% endcomment %}
-  {% comment %} {% for popular_movie in popular_movies %}
+  {% comment %} <video autoplay muted loop id="bg-video">
+      <source src="{% static 'movies/course-video.mp4' %}" type="video/mp4" />
+  </video> {% endcomment %}
+  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+    <source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" type="video/mp4">
+  </video>
+  {% comment %} 
+  <!-- 흥행작 -->
+  {% for popular_movie in popular_movies %}
       <h4><a href="{% url 'movies:detail' popular_movie.pk %}">{{popular_movie.title}}</a></h4>
       <p>개봉일 : {{popular_movie.release_date }}</p>
       <p>평점 : {{popular_movie.vote_average }}</p>
       <img src="https://image.tmdb.org/t/p/w300{{popular_movie.poster_path}}" alt=""><br> 
   {% endfor %}{% endcomment %}
 
-  {% comment %} {% for genre_movie in genre_movies %}
+  {% comment %} 
+  <!-- 장르별 추천 -->
+  {% for genre_movie in genre_movies %}
     {% for genre, movies in genre_movie.items %}
       {% if movies %}
         <p>{{ genre }}</p>
@@ -32,6 +40,7 @@
     {% endfor %}
   {% endfor %} {% endcomment %}
 
+  <!-- 로그인 유저의 선호 장르 순 -->
   {% if user.is_authenticated %}
     {% if rec_movie_genres %}
       {% for rec_movie_genre in rec_movie_genres %}

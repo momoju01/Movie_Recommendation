@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.http.response import JsonResponse
 from django.contrib.auth.decorators import login_required
 
+
 # from django.core.paginator import Paginator
 from django.db.models import Q
 from random import choice, randint
@@ -49,7 +50,7 @@ def index(request):
             like_movie_genres = top_review.movie.genre_ids.all()  # 리뷰 높은 영화의 장르들
             for like_movie_genre in like_movie_genres: 
                 rec_movie_genres.append({
-                    like_movie_genre.name: Movie.objects.filter(genre_ids__in=[like_movie_genre.id])[:5]
+                    like_movie_genre.name: Movie.objects.filter(genre_ids__in=[like_movie_genre.id])
                 })
         else: # 작성한 리뷰 없는 경우 평점순
             rated_movies = Movie.objects.order_by('-vote_average')

@@ -15,22 +15,38 @@
 
   <title>{% block title %}{% endblock %}</title>
   {% bootstrap_css %}
-  {% block CSS %}{% endblock %}
+
+  <style>
+    body {
+      background-color: black;
+    }
+      header {
+      position: relative;
+      background-color: black;
+      height: 100vh;
+      min-height: 25rem;
+      width: 100%;
+      overflow: hidden;
+    }
+  </style>
+  {% block CSS %}
+  {% endblock CSS %}
 
 </head>
 <body>
   
   {% include '_nav.html' %}
-  <div class="container">
-    <br>
-    <br>
-    <br>
+  {% comment %} <div class="container"> {% endcomment %}
+  <br>
+  <br>
+  <br>
 
-    {% block content %}
-    {% endblock content%}
+  {% block content %}
 
-    {% comment %} {% bootstrap_javascript jquery='full' %} {% endcomment %}
-  </div>
+  {% endblock content%}
+
+  {% comment %} {% bootstrap_javascript jquery='full' %} {% endcomment %}
+  {% comment %} </div> {% endcomment %}
   <!-- {% include '_foot.html' %} -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
   {% bootstrap_javascript %}

@@ -1,20 +1,117 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-  <h2>Home</h2>
-  <h2 id="movieTitle">{{random_movie.title}}</h2>
 
-  <!-- 예고편 -->
-  <div class="d-none d-sm-block mb-5 pb-4">
-    <div id="map" class="d-flex justify-content-center" style="height: 480px; position: relative; overflow: hidden;"> 
-        <iframe id="preview" class="embed-responsive-item mx-auto" frameborder="0" allowfullscreen width="75%" height="100%"></iframe>
+{% block CSS %}
+
+<style>
+body {
+  background-color: black;
+}
+  header {
+  position: relative;
+  background-color: black;
+  height: 100vh;
+  min-height: 25rem;
+  width: 100%;
+  overflow: hidden;
+}
+
+header video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: 0;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
+
+header .container {
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+
+header .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+  </style>
+{% endblock CSS %}
+
+<body>
+  <header>
+    <!-- 예고편 -->
+    {% comment %} <div class="d-none d-sm-block mb-5 pb-4">
+      <div id="map" class="d-flex justify-content-center" style="height: 480px; position: relative; overflow: hidden;"> 
+          <iframe id="preview" class="embed-responsive-item mx-auto" frameborder="0" allowfullscreen width="75%" height="100%"></iframe>
+      </div>
+    </div> {% endcomment %}
+    <!-- 작동 하는 코드. ..-->
+    
+    <div class="overlay"></div>
+    <video class="bg-primary_black h-100 w-100" playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop" id="bg-video">
+        <source src="{% static 'course-video.mp4' %}" type="video/mp4" />
+    </video>
+    <!-- The header content -->
+    <div class="container h-100">
+      <div class="d-flex h-100 text-center align-items-center">
+        <div class="w-100 text-white">
+          <h1 class="display-3">Video Header</h1>
+          <p class="lead mb-0">Using HTML5 Video and Bootstrap</p>
+        </div>
+      </div>
     </div>
-  </div>
+  </header>
+  <!-- Page section example for content below the video header -->
+  <section class="my-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 mx-auto">
+          <p>The HTML5 video element uses an mp4 video as a source. Change the source video to add in your own background! The header text is vertically centered using flex utilities that are built into Bootstrap.</p>
+          <p>The overlay color and opacity can be changed by modifying the <code>background-color</code> and <code>opacity</code> properties of the <code>.overlay</code> class in the CSS.</p>
+          <p>Set the mobile fallback image in the CSS by changing the background image of the header element within the media query at the bottom of the CSS snippet.</p>
+          <p class="mb-0">
+            Created by <a href="https://startbootstrap.com">Start Bootstrap</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+  
+  {% comment %} 
+  <div class="bg-primary_black h-full w-full" playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop" id="bg-video"> 
+    <iframe id="preview" class="embed-responsive-item mx-auto" frameborder="0" allowfullscreen width="100%" height="100vh"></iframe>
+  </div> 
+  {% endcomment %}
+
+<!-- 되긴 하는데 ... -->
+{% comment %} 
+  <body style="margin:0px;padding:0px;overflow:hidden"> 
+  <iframe id="preview" frameborder="0" style="overflow:hidden;overflow-x:hidden;overflow-y:hidden;height:100%;width:100%;position:absolute;top:0px;left:0px;right:0px;bottom:0px" height="100%" width="100%"></iframe> </body> {% endcomment %}
+
+  {% comment %} <h2 id="movieTitle">{{random_movie.title}}</h2>
+  <p>{{ random_movie.release_date }}</p>
+
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
   // 유튜브 예고편
-  const API_KEY = 'AIzaSyAD5IVkdRMFP0Iqo8xxmBbNM4Z1S2F8GzU'
+  const API_KEY = ''
   const YOUTUBE_URL = 'https://www.googleapis.com/youtube/v3/search'
   const videos = []
   const video = []
@@ -42,6 +139,6 @@
   get_preview()
   
 
-  </script>
+  </script> {% endcomment %}
   {% comment %} <a href="https://serieson.naver.com/search?t=all&q={{ movie.title }}&ot=&so=rel.dsc&fs=movie"> 시리즈온</a> {% endcomment %}
 {% endblock %}

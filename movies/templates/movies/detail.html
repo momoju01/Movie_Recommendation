@@ -4,16 +4,23 @@
   <h2>Detail</h2>
   <h2>{{movie.title}}</h2>
   <p>개봉일 : {{movie.release_date}}</p>
-  <p>관객 수 : {{movie.popularity}}</p>
-  <p>평점 수? :{{movie.vote_count}}</p>
+  <p>관객 수 : {{movie.popularity }}</p>
+  <p>평균 평점 : {{movie.vote_average }}</p>
   {% comment %} views.py의 context 에서 genres를 보냄 / views.py에서 만들어서 변수를 가져다 씀 {% endcomment %}
   {% for genre in genre_ids %}
       <span>{{ genre.name }} |</span>
   {% endfor %}
   <p>줄거리 : {{movie.overview}}</p>
   <img src="https://image.tmdb.org/t/p/w780{{movie.poster_path}}" alt="">
+  
+  <!-- 예고편 -->
+  <div class="d-none d-sm-block mb-5 pb-4">
+    <div id="map" class="d-flex justify-content-center" style="height: 480px; position: relative; overflow: hidden;"> 
+        <iframe id="preview" class="embed-responsive-item mx-auto" frameborder="0" allowfullscreen width="75%" height="100%"></iframe>
+    </div>
+  </div>
 
-
+  </div>
   <h4>리뷰 목록</h4>
   <button><a href="{% url 'movies:review_create' movie.pk %}">리뷰 작성</a></button>
   {% if reviews|length %}
@@ -34,6 +41,35 @@
 
   <a href="{% url 'movies:index' %}">[back]</a>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  // 유튜브 예고편
+  const API_KEY = 'AIzaSyAc3mdPbqCFEZYlNjOeGAw_lxey1321-GQ'
+  // const API_KEY = 'AIzaSyBYoVQuyYq7YYG2loQq83pISsFAFr64CU8'
+  const YOUTUBE_URL = 'https://www.googleapis.com/youtube/v3/search'
+  const videos = []
+  const video = []
+  const title = document.getElementById('movieTitle').innerText;
 
+  const get_preview = function () {
+    const params = {
+      key: API_KEY,
+      part: 'snippet',
+      type: 'video',
+      q: title+' trailer',
+    }
+    axios.get(YOUTUBE_URL, {params})
+      .then((res)=>{
+        this.videos = res.data.items
+        this.video = this.videos[0]
+        const iframeTag = document.querySelector('#preview')
+        const iframeSrc = `https://www.youtube.com/embed/${this.video.id.videoId}`
+        iframeTag.setAttribute('src', iframeSrc)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+  get_preview()
+  </script>
 {% endblock %}
-

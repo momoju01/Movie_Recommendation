@@ -1,0 +1,633 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block CSS %}
+{% load static %}
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <style>
+
+
+{% comment %} .cta-100 {
+  margin-top: 100px;
+  padding-left: 8%;
+  padding-top: 7%;
+}
+.col-md-4{
+    padding-bottom:20px;
+}
+
+.white {
+  color: #fff !important;
+}
+.mt{float: left;margin-top: -20px;padding-top: 20px;}
+.bg-blue-ui {
+  background-color: #708198 !important;
+}
+figure img{width:300px;}
+
+#blogCarousel {
+  padding-bottom: 100px;
+}
+
+.blog .carousel-indicators {
+  left: 0;
+  top: -50px;
+  height: 50%;
+}
+
+
+/* The colour of the indicators */
+
+.blog .carousel-indicators li {
+  background: #708198;
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+}
+
+.blog .carousel-indicators .active {
+  background: #0fc9af;
+}
+
+
+
+
+.item-carousel-blog-block {
+  outline: medium none;
+  padding: 15px;
+}
+
+.item-box-blog {
+  border: 1px solid #dadada;
+  text-align: center;
+  z-index: 4;
+  padding: 20px;
+}
+
+.item-box-blog-image {
+  position: relative;
+}
+
+.item-box-blog-image figure img {
+  width: 100%;
+  height: auto;
+}
+
+.item-box-blog-date {
+  position: absolute;
+  z-index: 5;
+  padding: 4px 20px;
+  top: -20px;
+  right: 8px;
+  background-color: #41cb52;
+}
+
+.item-box-blog-date span {
+  color: #fff;
+  display: block;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.item-box-blog-date span.mon {
+  font-size: 18px;
+}
+
+.item-box-blog-date span.day {
+  font-size: 16px;
+}
+
+.item-box-blog-body {
+  padding: 10px;
+}
+
+.item-heading-blog a h5 {
+  margin: 0;
+  line-height: 1;
+  text-decoration:none;
+  transition: color 0.3s;
+}
+
+.item-box-blog-heading a {
+    text-decoration: none;
+}
+
+.item-box-blog-data p {
+  font-size: 13px;
+}
+
+.item-box-blog-data p i {
+  font-size: 12px;
+}
+
+.item-box-blog-text {
+  max-height: 100px;
+  overflow: hidden;
+}
+
+.mt-10 {
+  float: left;
+  margin-top: -10px;
+  padding-top: 10px;
+}
+
+.btn.bg-blue-ui.white.read {
+  cursor: pointer;
+  padding: 4px 20px;
+  float: left;
+  margin-top: 10px;
+}
+
+.btn.bg-blue-ui.white.read:hover {
+  box-shadow: 0px 5px 15px inset #4d5f77;
+} {% endcomment %}
+
+     body { background-color: pink; color: white;}
+    .MultiCarousel { float: left; overflow: hidden; padding: 15px; width: 100%; position:relative; }
+    .MultiCarousel .MultiCarousel-inner { transition: 1s ease all; float: left; }
+    .MultiCarousel .MultiCarousel-inner .item { float: left;}
+    .MultiCarousel .MultiCarousel-inner .item > div { text-align: center; padding:10px; margin:10px; background:#f1f1f1; color:#666;}
+    .MultiCarousel .leftLst, .MultiCarousel .rightLst { position:absolute; border-radius:50%;top:calc(50% - 20px); }
+    .MultiCarousel .leftLst { left:0; }
+    .MultiCarousel .rightLst { right:0; }
+    .MultiCarousel .leftLst.over, .MultiCarousel .rightLst.over { pointer-events: none; background:#ccc; }
+  </style>
+{% endblock CSS %}
+
+{% block content %}
+  <h1>Movies</h1>
+  {% comment %} <video autoplay muted loop id="bg-video">
+      <source src="{% static 'movies/course-video.mp4' %}" type="video/mp4" />
+  </video> {% endcomment %}
+  {% comment %} <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+    <source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" type="video/mp4">
+  </video> {% endcomment %}
+  
+
+
+
+  <!-- 로그인 유저의 선호 장르 순 -->
+  {% comment %} {% if user.is_authenticated %}
+    {% if rec_movie_genres %}
+      <div>
+        <p>당신의 취향 저격 !</p>
+      </div>
+      {% for rec_movie_genre in rec_movie_genres %}
+        {% for genre, movies in rec_movie_genre.items %}
+          {% if movies %}
+            <div class="container">
+              <div class="container-title">
+                <p>{{ genre }}</p>
+              </div>
+              <div class="row">
+                <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
+                  <div class="MultiCarousel-inner">
+                    {% for movie in movies %}
+                      <div class="item">
+                        <div class="card">
+                          <a href="{% url 'movies:detail' movie.pk %}">
+                            <img src="https://image.tmdb.org/t/p/w500{{movie.poster_path}}" class="card-img-top" alt=""><br>
+                            <div class="card-body">
+                              <h5 class="card-title">{{movie.title}}</h5>
+                              <div class="card-text">
+                                <p>개봉일 : {{ movie.release_date }}</p>
+                                <p>평점 : {{ movie.vote_average }}</p>
+                              </div>
+                            </div>
+                          </a>
+                        </div>
+                      </div>            
+                    {% endfor %}
+                  </div>
+                  <button class="btn btn-primary leftLst"><</button>
+                  <button class="btn btn-primary rightLst">></button>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+      {% else %}
+      <div class="container">
+        <div class="container-title">
+          <p style="color:white;">리뷰를 남기시면 취향에 맞는 영화 추천해줘요~~</p>
+        </div>
+        <div class="row">
+          <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
+            <div class="MultiCarousel-inner">
+              {% for rated_movie in rated_movies %}
+                <div class="item">
+                  <div class="card">
+                    <a href="{% url 'movies:detail' rated_movie.pk %}">
+                      <img src="https://image.tmdb.org/t/p/w500{{rated_movie.poster_path}}" class="card-img-top" alt=""><br>
+                      <div class="card-body">
+                        <h5 class="card-title">{{rated_movie.title}}</h5>
+                        <div class="card-text">
+                          <p>개봉일 : {{ rated_movie.release_date }}</p>
+                          <p>평점 : {{ rated_movie.vote_average }}</p>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                </div>  
+              {% endfor %}
+            </div>
+            <button class="btn btn-primary leftLst"><</button>
+            <button class="btn btn-primary rightLst">></button>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+  {% else %}
+    <div class="container">
+      <div class="container-title">
+        <p style="color:white;">로그인 하시면 취향에 맞는 영화 추천해줘요~~</p>
+      </div>
+      <div class="row">
+        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
+          <div class="MultiCarousel-inner">
+            {% for rated_movie in rated_movies %}
+              <div class="item">
+                <div class="card">
+                  <a title ={{ rated_movie.title }} href="{% url 'movies:detail' rated_movie.pk %}">
+                    <img src="https://image.tmdb.org/t/p/w500{{rated_movie.poster_path}}" class="card-img-top" alt=""><br>
+                    <div class="card-body">
+                      <h5 class="card-title">{{rated_movie.title}}</h5>
+                      <div class="card-text">
+                        <p>개봉일 : {{ rated_movie.release_date }}</p>
+                        <p>평점 : {{ rated_movie.vote_average }}</p>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          <button class="btn btn-primary leftLst"><</button>
+          <button class="btn btn-primary rightLst">></button>
+        </div>
+      </div>
+    </div> 
+  {% endif %} {% endcomment %}
+
+  {% comment %} <!-- 흥행작 -->
+  <div class="container">
+    <div class="container-title">
+      <p>최고 흥행 작 !</p>
+    </div>
+    <div class="row">
+      <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
+        <div class="MultiCarousel-inner">
+          {% for popular_movie in popular_movies %}
+            <div class="item">
+              <div class="card">
+                <a href="{% url 'movies:detail' popular_movie.pk %}">
+                  <img src="https://image.tmdb.org/t/p/w500{{popular_movie.poster_path}}" class="card-img-top" alt=""><br>
+                  <div class="card-body">
+                    <h5 class="card-title">{{popular_movie.title}}</h5>
+                    <div class="card-text">
+                      <p>개봉일 : {{ popular_movie.release_date }}</p>
+                      <p>평점 : {{ popular_movie.vote_average }}</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>    
+          {% endfor %}
+        </div>
+        <button class="btn btn-primary leftLst"><</button>
+        <button class="btn btn-primary rightLst">></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 장르별 추천 -->
+  {% for genre_movie in genre_movies %}
+    {% for genre, movies in genre_movie.items %}
+      {% if movies %}
+        <div class="container">
+          <div class="container-title">
+            <p>{{ genre }}</p>
+          </div>
+          <div class="row">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
+              <div class="MultiCarousel-inner">
+                {% for movie in movies %}
+                  <div class="item">
+                    <div class="card">
+                      <a href="{% url 'movies:detail' movie.pk %}">
+                        <img src="https://image.tmdb.org/t/p/w500{{movie.poster_path}}" class="card-img-top" alt=""><br>
+                        <div class="card-body">
+                          <h5 class="card-title">{{movie.title}}</h5>
+                          <div class="card-text">
+                            <p>개봉일 : {{ movie.release_date }}</p>
+                            <p>평점 : {{ movie.vote_average }}</p>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>    
+                {% endfor %}
+              </div>
+              <button class="btn btn-primary leftLst"><</button>
+              <button class="btn btn-primary rightLst">></button>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}  {% endcomment %}
+
+
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+
+{% comment %} <!-- 흥행작 -->
+  <div class="container">
+    <div class="container-title">
+      <p>최고 흥행 작 !</p>
+    </div>
+    <div class="row">
+      <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
+        <div class="MultiCarousel-inner">
+          {% for popular_movie in popular_movies %}
+            <div class="item">
+              <div class="card">
+                <a href="{% url 'movies:detail' popular_movie.pk %}">
+                  <img src="https://image.tmdb.org/t/p/w500{{popular_movie.poster_path}}" class="card-img-top" alt=""><br>
+                  <div class="card-body">
+                    <h5 class="card-title">{{popular_movie.title}}</h5>
+                    <div class="card-text">
+                      <p>개봉일 : {{ popular_movie.release_date }}</p>
+                      <p>평점 : {{ popular_movie.vote_average }}</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>    
+          {% endfor %}
+        </div>
+        <button class="btn btn-primary leftLst"><</button>
+        <button class="btn btn-primary rightLst">></button>
+      </div>
+    </div>
+  </div> {% endcomment %}
+	  
+      {% comment %} <div class="container cta-100 ">
+        <div class="container">
+          <div class="row blog">
+            <div class="col-md-12">
+              <div id="blogCarousel" class="carousel slide container-blog" data-ride="carousel">
+                <ol class="carousel-indicators">
+                  <li data-target="#blogCarousel" data-slide-to="0" class="active"></li>
+                  <li data-target="#blogCarousel" data-slide-to="1"></li>
+                </ol>
+                <div class="carousel-title">
+                  <p>최고 흥행 작 !</p>
+                </div>
+                <!-- Carousel items -->
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <div class="row">
+                    {% for popular_movie in popular_movies %}
+                      <div class="col-md-4" >
+                        <div class="item-box-blog">
+                          <div class="item-box-blog-image">
+                            <!--Image-->
+                            <figure> <img src="https://image.tmdb.org/t/p/w500{{popular_movie.poster_path}}" alt=""> </figure>
+                          </div>
+                          <div class="item-box-blog-body">
+                            <!--Heading-->
+                            <div class="item-box-blog-heading">
+                              <a href="#" tabindex="0">
+                                <h5>{{popular_movie.title}}</h5>
+                              </a>
+                            </div>
+                            <!--Data-->
+                            <div class="item-box-blog-data" style="padding: px 15px;">
+                              <p><i class="fa fa-user-o"></i> Admin, <i class="fa fa-comments-o"></i> Comments(3)</p>
+                            </div>
+                            <!--Text-->
+                            <div class="item-box-blog-text">
+                              <p>개봉일 : {{ popular_movie.release_date }}</p>
+                              <p>평점 : {{ popular_movie.vote_average }}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% endfor %}
+
+
+
+                    </div>
+                    <!--.row-->
+                  </div>
+                  <!--.item-->
+                  <div class="carousel-item ">
+                    <div class="row">
+                      <div class="col-md-4" >
+                        <div class="item-box-blog">
+                          <div class="item-box-blog-image">
+                            <!--Date-->
+                            <div class="item-box-blog-date bg-blue-ui white"> <span class="mon">Augu 01</span> </div>
+                            <!--Image-->
+                            <figure> <img alt="" src="https://cdn.pixabay.com/photo/2017/02/08/14/25/computer-2048983_960_720.jpg"> </figure>
+                          </div>
+                          <div class="item-box-blog-body">
+                            <!--Heading-->
+                            <div class="item-box-blog-heading">
+                              <a href="#" tabindex="0">
+                                <h5>News Title</h5>
+                              </a>
+                            </div>
+                            <!--Data-->
+                            <div class="item-box-blog-data" style="padding: px 15px;">
+                              <p><i class="fa fa-user-o"></i> Admin, <i class="fa fa-comments-o"></i> Comments(3)</p>
+                            </div>
+                            <!--Text-->
+                            <div class="item-box-blog-text">
+                              <p>Lorem ipsum dolor sit amet, adipiscing. Lorem ipsum dolor sit amet, consectetuer adipiscing. Lorem ipsum dolor sit amet, adipiscing. Lorem ipsum dolor sit amet, adipiscing. Lorem ipsum dolor sit amet, consectetuer adipiscing. Lorem ipsum dolor.</p>
+                            </div>
+                            <div class="mt"> <a href="#" tabindex="0" class="btn bg-blue-ui white read">read more</a> </div>
+                            <!--Read More Button-->
+                          </div>
+                        </div>
+                      </div>
+
+
+                    </div>
+                    <!--.row-->
+                  </div>
+                  <!--.item-->
+                </div>
+                <!--.carousel-inner-->
+              </div>
+              <!--.Carousel-->
+            </div>
+          </div>
+        </div>
+      </div> {% endcomment %}
+   
+
+
+<!------ Include the above in your HEAD tag ---------->
+
+
+
+<div class="container">
+	<div class="row">
+		<div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
+            <div class="MultiCarousel-inner">
+                <div class="item">
+                  <div class="card">
+                    <img src="{% static 'course-03.jpg' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">Card title</h5>
+                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                      <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="card">
+                    <img src="{% static 'course-03.jpg' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">Card title</h5>
+                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                      <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <button class="btn btn-primary leftLst"><</button>
+            <button class="btn btn-primary rightLst">></button>
+        </div>
+	</div>
+  <div class="row">
+	    <div class="col-md-12 text-center">
+	        <br/><br/><br/>
+	        <hr/>
+	        <p>Settings</p>
+	        <p>Change data items for xs,sm,md and lg display items respectively. Ex:data-items="1,3,5,6"</p>
+	        <p>Change data slide for slides per click Ex:data-slide="1"</p>
+	    </div>
+	</div> 
+</div>
+
+
+<script>
+$(document).ready(function () {
+    var itemsMainDiv = ('.MultiCarousel');
+    var itemsDiv = ('.MultiCarousel-inner');
+    var itemWidth = "";
+
+    $('.leftLst, .rightLst').click(function () {
+        var condition = $(this).hasClass("leftLst");
+        if (condition)
+            click(0, this);
+        else
+            click(1, this)
+    });
+
+    ResCarouselSize();
+
+
+
+
+    $(window).resize(function () {
+        ResCarouselSize();
+    });
+
+    //this function define the size of the items
+    function ResCarouselSize() {
+        var incno = 0;
+        var dataItems = ("data-items");
+        var itemClass = ('.item');
+        var id = 0;
+        var btnParentSb = '';
+        var itemsSplit = '';
+        var sampwidth = $(itemsMainDiv).width();
+        var bodyWidth = $('body').width();
+        $(itemsDiv).each(function () {
+            id = id + 1;
+            var itemNumbers = $(this).find(itemClass).length;
+            btnParentSb = $(this).parent().attr(dataItems);
+            itemsSplit = btnParentSb.split(',');
+            $(this).parent().attr("id", "MultiCarousel" + id);
+
+
+            if (bodyWidth >= 1200) {
+                incno = itemsSplit[3];
+                itemWidth = sampwidth / incno;
+            }
+            else if (bodyWidth >= 992) {
+                incno = itemsSplit[2];
+                itemWidth = sampwidth / incno;
+            }
+            else if (bodyWidth >= 768) {
+                incno = itemsSplit[1];
+                itemWidth = sampwidth / incno;
+            }
+            else {
+                incno = itemsSplit[0];
+                itemWidth = sampwidth / incno;
+            }
+            $(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers });
+            $(this).find(itemClass).each(function () {
+                $(this).outerWidth(itemWidth);
+            });
+
+            $(".leftLst").addClass("over");
+            $(".rightLst").removeClass("over");
+
+        });
+    }
+
+
+    //this function used to move the items
+    function ResCarousel(e, el, s) {
+        var leftBtn = ('.leftLst');
+        var rightBtn = ('.rightLst');
+        var translateXval = '';
+        var divStyle = $(el + ' ' + itemsDiv).css('transform');
+        var values = divStyle.match(/-?[\d\.]+/g);
+        var xds = Math.abs(values[4]);
+        if (e == 0) {
+            translateXval = parseInt(xds) - parseInt(itemWidth * s);
+            $(el + ' ' + rightBtn).removeClass("over");
+
+            if (translateXval <= itemWidth / 2) {
+                translateXval = 0;
+                $(el + ' ' + leftBtn).addClass("over");
+            }
+        }
+        else if (e == 1) {
+            var itemsCondition = $(el).find(itemsDiv).width() - $(el).width();
+            translateXval = parseInt(xds) + parseInt(itemWidth * s);
+            $(el + ' ' + leftBtn).removeClass("over");
+
+            if (translateXval >= itemsCondition - itemWidth / 2) {
+                translateXval = itemsCondition;
+                $(el + ' ' + rightBtn).addClass("over");
+            }
+        }
+        $(el + ' ' + itemsDiv).css('transform', 'translateX(' + -translateXval + 'px)');
+    }
+
+    //It is used to get some elements from btn
+    function click(ell, ee) {
+        var Parent = "#" + $(ee).parent().attr("id");
+        var slide = $(Parent).attr("data-slide");
+        ResCarousel(ell, Parent, slide);
+    }
+
+});
+</script> 
+  
+{% endblock %}

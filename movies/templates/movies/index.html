@@ -6,20 +6,102 @@
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.theme.min.css"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.css"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+
+        <div class="col-md-6 col-sm-6 col-xs-6 hidden-xs">
+        <div class="controls pull-right">
+          <a class="left fa fa-chevron-left btn btn-info " href="#carousel-example" data-slide="prev"></a><a class="right fa fa-chevron-right btn btn-info" href="#carousel-example" data-slide="next"></a>
+        </div>
+      </div>
   <style>
-    * { background-color: black; color: white;}
-    .MultiCarousel { float: left; overflow: hidden; padding: 15px; width: 100%; position:relative; }
-    .MultiCarousel .MultiCarousel-inner { transition: 1s ease all; float: left; }
-    .MultiCarousel .MultiCarousel-inner .item { float: left;}
-    .MultiCarousel .MultiCarousel-inner .item > div { text-align: center; padding:10px; margin:10px; background:#f1f1f1; color:#666;}
-    .MultiCarousel .leftLst, .MultiCarousel .rightLst { position:absolute; border-radius:50%;top:calc(50% - 20px); }
-    .MultiCarousel .leftLst { left:0; }
-    .MultiCarousel .rightLst { right:0; }
-    .MultiCarousel .leftLst.over, .MultiCarousel .rightLst.over { pointer-events: none; background:#ccc; }
+    .container {
+      m
+    }
+    .slider-item{
+    border: 1px solid #E1E1E1;
+    border-radius: 5px;
+    background: #FFF;
+    }
+    .slider-item .slider-image img{
+    margin: 0 auto;
+    width: 100%;
+    }
+    .slider-item .slider-main-detail{
+    padding: 10px;
+    border-radius: 0 0 5px 5px;
+    }
+    .slider-item:hover .slider-main-detail{
+    background-color: #dbeeee !important;
+    }
+    .slider-item .price{
+    float: left;
+    margin-top: 5px;
+    }
+    .slider-item .price h5{
+    line-height: 20px;
+    margin: 0;
+    }
+    .detail-price{
+    color: #219FD1;
+    }
+    .slider-item .slider-main-detail .rating{
+    color: #777;
+    }
+    .slider-item .rating{
+    float: left;
+    font-size: 17px;
+    text-align: right;
+    line-height: 52px;
+    margin-bottom: 10px;
+    height: 52px;
+    }
+    .slider-item .btn-add{
+    width: 50%;
+    float: left;
+    border-right: 1px solid #E1E1E1;
+    }
+    .slider-item .btn-details{
+    width: 50%;
+    float: left;
+    }
+    .controls{
+    margin-top: 20px;
+    }
+    .btn-info,.btn-info:visited,.btn-info:hover{
+    background-color: #21BBD8;
+    border-color: #21BBD8;
+    }
+    .btn-info{
+    margin-left:5px;
+    }
+    .slider-main-detail:hover{
+    background-color: #dbeeee !important;
+    }
+    .AddCart{
+    margin: 0px;
+    padding:5px;
+    border-radius:2px;
+    margin-right:10px;
+    }
+    .review {
+    margin-bottom: 5px;
+    padding-top:5px;
+    }
   </style>
 {% endblock CSS %}
 
 {% block content %}
+
+<body>
   <h1>Movies</h1>
   {% comment %} <video autoplay muted loop id="bg-video">
       <source src="{% static 'movies/course-video.mp4' %}" type="video/mp4" />
@@ -33,327 +115,498 @@
 
   <!-- 로그인 유저의 선호 장르 순 -->
   {% if user.is_authenticated %}
-    {% if rec_movie_genres %}
+    {% if genre_movies %}
       <div>
-        <p>당신의 취향 저격 !</p>
+        <h1>당신이 선호하는 장르의 영화입니다~</h1>
       </div>
-      {% for rec_movie_genre in rec_movie_genres %}
-        {% for genre, movies in rec_movie_genre.items %}
-          {% if movies %}
-            <div class="container">
-              <div class="container-title">
-                <p>{{ genre }}</p>
-              </div>
+      <div class="container">
+        {% for rec_movie_genre in rec_movie_genres %}
+          {% for genre, movies in rec_movie_genre.items %}
+            {% if movies %}
+              
               <div class="row">
-                <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
-                  <div class="MultiCarousel-inner">
-                    {% for movie in movies %}
-                      <div class="item">
-                        <div class="card">
-                          <a href="{% url 'movies:detail' movie.pk %}">
-                            <img src="https://image.tmdb.org/t/p/w500{{movie.poster_path}}" class="card-img-top" alt=""><br>
-                            <div class="card-body">
-                              <h5 class="card-title">{{movie.title}}</h5>
-                              <div class="card-text">
-                                <p>개봉일 : {{ movie.release_date }}</p>
-                                <p>평점 : {{ movie.vote_average }}</p>
-                              </div>
-                            </div>
-                          </a>
-                        </div>
-                      </div>            
-                    {% endfor %}
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <h2>{{ genre }}</h2>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 hidden-xs">
+                  <div class="controls pull-right">
+                    <a class="left fa fa-chevron-left btn btn-info " href="#carousel-example" data-slide="prev"></a><a class="right fa fa-chevron-right btn btn-info" href="#carousel-example" data-slide="next"></a>
                   </div>
-                  <button class="btn btn-primary leftLst"><</button>
-                  <button class="btn btn-primary rightLst">></button>
+                </div>
+              </div>
+              <div id="carousel-example" class="carousel slide hidden-xs" data-ride="carousel" data-type="multi">
+
+                <div class="carousel-inner">
+                  <div div class="item active">
+                    <div class="row">
+                      {% for movie in movies %}
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                          <div class="slider-item">
+                            <a href="{% url 'movies:detail' movie.pk %}">
+                              <div class="slider-image">
+                              <img src="https://image.tmdb.org/t/p/w500{{movie.poster_path}}" class="img-responsive" alt="">
+                              </div>
+                              <div class="slider-main-detail">
+                                <div class="slider-detail">
+                                  <div class="product-detail">
+                                    <h5>{{movie.title}}</h5>
+                                    <h5 class="detail-price">{{movie.release_date}}</h5>
+                                  </div>
+                                </div>
+                              
+                                <div class="cart-section">
+                                  <div class="row">
+                                    <div class="col-md-6 col-sm-12 col-xs-6 review">
+                                      <i class="fa fa-star" aria-hidden="true"></i>
+                                      <i class="fa fa-star" aria-hidden="true"></i>
+                                      <i class="fa fa-star" aria-hidden="true"></i>
+                                      <i class="fa fa-star-o" aria-hidden="true"></i>
+                                      <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12 col-xs-6">
+                                      <a href="#" class="AddCart btn btn-info"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Add To Cart</a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </a>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  
                 </div>
               </div>
             </div>
-          {% endif %}
+            
+            {% endif %}
+          {% endfor %}
         {% endfor %}
-      {% endfor %}
+      
+
+        {% for rec_movie_genre_2 in rec_movie_genres_2 %}
+          {% for genre, movies in rec_movie_genre_2.items %}
+            {% if movies %}
+              
+              <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <h2>{{ genre }}</h2>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 hidden-xs">
+                  <div class="controls pull-right">
+                    <a class="left fa fa-chevron-left btn btn-info " href="#carousel-example" data-slide="prev"></a><a class="right fa fa-chevron-right btn btn-info" href="#carousel-example" data-slide="next"></a>
+                  </div>
+                </div>
+              </div>
+              <div id="carousel-example" class="carousel slide hidden-xs" data-ride="carousel" data-type="multi">
+
+                <div class="carousel-inner">
+                  <div div class="item active">
+                    <div class="row">
+                      {% for movie in movies %}
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                          <div class="slider-item">
+                            <a href="{% url 'movies:detail' movie.pk %}">
+                              <div class="slider-image">
+                              <img src="https://image.tmdb.org/t/p/w500{{movie.poster_path}}" class="img-responsive" alt="">
+                              </div>
+                              <div class="slider-main-detail">
+                                <div class="slider-detail">
+                                  <div class="product-detail">
+                                    <h5>{{movie.title}}</h5>
+                                    <h5 class="detail-price">{{movie.release_date}}</h5>
+                                  </div>
+                                </div>
+                              
+                                <div class="cart-section">
+                                  <div class="row">
+                                    <div class="col-md-6 col-sm-12 col-xs-6 review">
+                                      <i class="fa fa-star" aria-hidden="true"></i>
+                                      <i class="fa fa-star" aria-hidden="true"></i>
+                                      <i class="fa fa-star" aria-hidden="true"></i>
+                                      <i class="fa fa-star-o" aria-hidden="true"></i>
+                                      <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12 col-xs-6">
+                                      <a href="#" class="AddCart btn btn-info"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Add To Cart</a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </a>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+            
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </div>
+
+
+
+
       {% else %}
-      <div class="container">
-        <div class="container-title">
-          <p style="color:white;">리뷰를 남기시면 취향에 맞는 영화 추천해줘요~~</p>
-        </div>
-        <div class="row">
-          <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
-            <div class="MultiCarousel-inner">
-              {% for rated_movie in rated_movies %}
-                <div class="item">
-                  <div class="card">
-                    <a href="{% url 'movies:detail' rated_movie.pk %}">
-                      <img src="https://image.tmdb.org/t/p/w500{{rated_movie.poster_path}}" class="card-img-top" alt=""><br>
-                      <div class="card-body">
-                        <h5 class="card-title">{{rated_movie.title}}</h5>
-                        <div class="card-text">
-                          <p>개봉일 : {{ rated_movie.release_date }}</p>
-                          <p>평점 : {{ rated_movie.vote_average }}</p>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12">
+            <h2>리뷰를 남기시면 영화를 추천해드려요~</h2>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6 hidden-xs">
+              <div class="controls pull-right">
+                <a class="left fa fa-chevron-left btn btn-info " href="#carousel-example" data-slide="prev"></a><a class="right fa fa-chevron-right btn btn-info" href="#carousel-example" data-slide="next"></a>
+              </div>
+            </div>
+          </div>
+          <div id="carousel-example" class="carousel slide hidden-xs" data-ride="carousel" data-type="multi">
+            <div class="carousel-inner">
+              <div div class="item active">
+                <div class="row">
+                  {% for rated_movie in rated_movies %}
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                      <div class="slider-item">
+                        <div class="slider-image">
+                        <img src="https://image.tmdb.org/t/p/w500{{rated_movie.poster_path}}" class="img-responsive" alt="">
+                        </div>
+                        <div class="slider-main-detail">
+                          <div class="slider-detail">
+                            <div class="product-detail">
+                              <h5>{{rated_movie.title}}</h5>
+                              <h5 class="detail-price">{{rated_movie.release_date}}</h5>
+                            </div>
+                          </div>
+                        
+                          <div class="cart-section">
+                            <div class="row">
+                              <div class="col-md-6 col-sm-12 col-xs-6 review">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                              </div>
+                              <div class="col-md-6 col-sm-12 col-xs-6">
+                                <a href="#" class="AddCart btn btn-info"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Add To Cart</a>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </a>
-                  </div>
-                </div>  
-              {% endfor %}
-            </div>
-            <button class="btn btn-primary leftLst"><</button>
-            <button class="btn btn-primary rightLst">></button>
-          </div>
-        </div>
-      </div>
-      {% endif %}
-  {% else %}
-    <div class="container">
-      <div class="container-title">
-        <p style="color:white;">로그인 하시면 취향에 맞는 영화 추천해줘요~~</p>
-      </div>
-      <div class="row">
-        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
-          <div class="MultiCarousel-inner">
-            {% for rated_movie in rated_movies %}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
               <div class="item">
-                <div class="card">
-                  <a title ={{ rated_movie.title }} href="{% url 'movies:detail' rated_movie.pk %}">
-                    <img src="https://image.tmdb.org/t/p/w500{{rated_movie.poster_path}}" class="card-img-top" alt=""><br>
-                    <div class="card-body">
-                      <h5 class="card-title">{{rated_movie.title}}</h5>
-                      <div class="card-text">
-                        <p>개봉일 : {{ rated_movie.release_date }}</p>
-                        <p>평점 : {{ rated_movie.vote_average }}</p>
+                <div class="row">
+                  {% for rated_movie_2 in rated_movies_2 %}
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                      <div class="slider-item">
+                        <div class="slider-image">
+                        <img src="https://image.tmdb.org/t/p/w500{{rated_movie_2.poster_path}}" class="img-responsive" alt="">
+                        </div>
+                        <div class="slider-main-detail">
+                          <div class="slider-detail">
+                            <div class="product-detail">
+                              <h5>{{rated_movie_2.title}}</h5>
+                              <h5 class="detail-price">{{rated_movie_2.release_date}}</h5>
+                            </div>
+                          </div>
+                        
+                          <div class="cart-section">
+                            <div class="row">
+                              <div class="col-md-6 col-sm-12 col-xs-6 review">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                              </div>
+                              <div class="col-md-6 col-sm-12 col-xs-6">
+                                <a href="#" class="AddCart btn btn-info"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Add To Cart</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </a>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+  {% else %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 col-sm-6 col-xs-12">
+      <h2>로그인 하시면 취향에 맞는 영화 추천해줘요~~</h2>
+      </div>
+      <div class="col-md-6 col-sm-6 col-xs-6 hidden-xs">
+        <div class="controls pull-right">
+          <a class="left fa fa-chevron-left btn btn-info " href="#carousel-example" data-slide="prev"></a><a class="right fa fa-chevron-right btn btn-info" href="#carousel-example" data-slide="next"></a>
+        </div>
+      </div>
+    </div>
+    <div id="carousel-example" class="carousel slide hidden-xs" data-ride="carousel" data-type="multi">
+      <div class="carousel-inner">
+        <div div class="item active">
+          <div class="row">
+            {% for rated_movie in rated_movies %}
+              <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="slider-item">
+                  <div class="slider-image">
+                  <img src="https://image.tmdb.org/t/p/w500{{rated_movie.poster_path}}" class="img-responsive" alt="">
+                  </div>
+                  <div class="slider-main-detail">
+                    <div class="slider-detail">
+                      <div class="product-detail">
+                        <h5>{{rated_movie.title}}</h5>
+                        <h5 class="detail-price">{{rated_movie.release_date}}</h5>
+                      </div>
+                    </div>
+                  
+                    <div class="cart-section">
+                      <div class="row">
+                        <div class="col-md-6 col-sm-12 col-xs-6 review">
+                          <i class="fa fa-star" aria-hidden="true"></i>
+                          <i class="fa fa-star" aria-hidden="true"></i>
+                          <i class="fa fa-star" aria-hidden="true"></i>
+                          <i class="fa fa-star-o" aria-hidden="true"></i>
+                          <i class="fa fa-star-o" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-xs-6">
+                          <a href="#" class="AddCart btn btn-info"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Add To Cart</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             {% endfor %}
           </div>
-          <button class="btn btn-primary leftLst"><</button>
-          <button class="btn btn-primary rightLst">></button>
         </div>
-      </div>
-    </div> 
-  {% endif %}
-
-  <!-- 흥행작 -->
-  <div class="container">
-    <div class="container-title">
-      <p>최고 흥행 작 !</p>
-    </div>
-    <div class="row">
-      <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
-        <div class="MultiCarousel-inner">
-          {% for popular_movie in popular_movies %}
-            <div class="item">
-              <div class="card">
-                <a href="{% url 'movies:detail' popular_movie.pk %}">
-                  <img src="https://image.tmdb.org/t/p/w500{{popular_movie.poster_path}}" class="card-img-top" alt=""><br>
-                  <div class="card-body">
-                    <h5 class="card-title">{{popular_movie.title}}</h5>
-                    <div class="card-text">
-                      <p>개봉일 : {{ popular_movie.release_date }}</p>
-                      <p>평점 : {{ popular_movie.vote_average }}</p>
+        <div class="item">
+          <div class="row">
+            {% for rated_movie_2 in rated_movies_2 %}
+              <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="slider-item">
+                  <div class="slider-image">
+                  <img src="https://image.tmdb.org/t/p/w500{{rated_movie_2.poster_path}}" class="img-responsive" alt="">
+                  </div>
+                  <div class="slider-main-detail">
+                    <div class="slider-detail">
+                      <div class="product-detail">
+                        <h5>{{rated_movie_2.title}}</h5>
+                        <h5 class="detail-price">{{rated_movie_2.release_date}}</h5>
+                      </div>
+                    </div>
+                  
+                    <div class="cart-section">
+                      <div class="row">
+                        <div class="col-md-6 col-sm-12 col-xs-6 review">
+                          <i class="fa fa-star" aria-hidden="true"></i>
+                          <i class="fa fa-star" aria-hidden="true"></i>
+                          <i class="fa fa-star" aria-hidden="true"></i>
+                          <i class="fa fa-star-o" aria-hidden="true"></i>
+                          <i class="fa fa-star-o" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-xs-6">
+                          <a href="#" class="AddCart btn btn-info"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Add To Cart</a>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </a>
+                </div>
               </div>
-            </div>    
-          {% endfor %}
+            {% endfor %}
+          </div>
         </div>
-        <button class="btn btn-primary leftLst"><</button>
-        <button class="btn btn-primary rightLst">></button>
       </div>
     </div>
   </div>
+  {% endif %} 
 
-  <!-- 장르별 추천 -->
-  {% for genre_movie in genre_movies %}
-    {% for genre, movies in genre_movie.items %}
-      {% if movies %}
-        <div class="container">
-          <div class="container-title">
-            <p>{{ genre }}</p>
-          </div>
+ <!-- 흥행작 -->
+ <h1>흥행작 순</h1>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 col-sm-6 col-xs-12">
+      <h2>2021 최고의 흥행 영화</h2>
+      </div>
+      <div class="col-md-6 col-sm-6 col-xs-6 hidden-xs">
+        <div class="controls pull-right">
+          <a class="left fa fa-chevron-left btn btn-info " href="#carousel-example" data-slide="prev"></a><a class="right fa fa-chevron-right btn btn-info" href="#carousel-example" data-slide="next"></a>
+        </div>
+      </div>
+    </div>
+    <div id="carousel-example" class="carousel slide hidden-xs" data-ride="carousel" data-type="multi">
+      <div class="carousel-inner">
+        <div div class="item active">
           <div class="row">
-            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
-              <div class="MultiCarousel-inner">
-                {% for movie in movies %}
-                  <div class="item">
-                    <div class="card">
-                      <a href="{% url 'movies:detail' movie.pk %}">
-                        <img src="https://image.tmdb.org/t/p/w500{{movie.poster_path}}" class="card-img-top" alt=""><br>
-                        <div class="card-body">
-                          <h5 class="card-title">{{movie.title}}</h5>
-                          <div class="card-text">
-                            <p>개봉일 : {{ movie.release_date }}</p>
-                            <p>평점 : {{ movie.vote_average }}</p>
-                          </div>
-                        </div>
-                      </a>
+            {% for popular_movie in popular_movies %}
+              <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="slider-item">
+                  <div class="slider-image">
+                  <img src="https://image.tmdb.org/t/p/w500{{popular_movie.poster_path}}" class="img-responsive" alt="">
+                  </div>
+                  <div class="slider-main-detail">
+                    <div class="slider-detail">
+                      <div class="product-detail">
+                        <h5>{{popular_movie.title}}</h5>
+                        <h5 class="detail-price">{{popular_movie.release_date}}</h5>
+                      </div>
                     </div>
-                  </div>    
-                {% endfor %}
+                  
+                    <div class="cart-section">
+                      <div class="row">
+                        <div class="col-md-6 col-sm-12 col-xs-6 review">
+                          <i class="fa fa-star" aria-hidden="true"></i>
+                          <i class="fa fa-star" aria-hidden="true"></i>
+                          <i class="fa fa-star" aria-hidden="true"></i>
+                          <i class="fa fa-star-o" aria-hidden="true"></i>
+                          <i class="fa fa-star-o" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-xs-6">
+                          <a href="#" class="AddCart btn btn-info"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Add To Cart</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <button class="btn btn-primary leftLst"><</button>
-              <button class="btn btn-primary rightLst">></button>
-            </div>
+            {% endfor %}
           </div>
         </div>
-      {% endif %}
-    {% endfor %}
-  {% endfor %} 
+        <div class="item">
+          <div class="row">
+            {% for popular_movie_2 in popular_movies_2 %}
+              <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="slider-item">
+                  <div class="slider-image">
+                  <img src="https://image.tmdb.org/t/p/w500{{popular_movie_2.poster_path}}" class="img-responsive" alt="">
+                  </div>
+                  <div class="slider-main-detail">
+                    <div class="slider-detail">
+                      <div class="product-detail">
+                        <h5>{{popular_movie_2.title}}</h5>
+                        <h5 class="detail-price">{{popular_movie_2.release_date}}</h5>
+                      </div>
+                    </div>
+                  
+                    <div class="cart-section">
+                      <div class="row">
+                        <div class="col-md-6 col-sm-12 col-xs-6 review">
+                          <i class="fa fa-star" aria-hidden="true"></i>
+                          <i class="fa fa-star" aria-hidden="true"></i>
+                          <i class="fa fa-star" aria-hidden="true"></i>
+                          <i class="fa fa-star-o" aria-hidden="true"></i>
+                          <i class="fa fa-star-o" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-xs-6">
+                          <a href="#" class="AddCart btn btn-info"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Add To Cart</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+<!-- 장르별 추천 -->
+  <h1>장르별 영화 추천</h1>
+      {% for genre_movie in genre_movies %}
+        {% for genre, movies in genre_movie.items %}
+          {% if movies %}
+            <div class="container">
+              <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <h2>{{ genre }}</h2>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 hidden-xs">
+                  <div class="controls pull-right">
+                    <a class="left fa fa-chevron-left btn btn-info " href="#carousel-example" data-slide="prev"></a><a class="right fa fa-chevron-right btn btn-info" href="#carousel-example" data-slide="next"></a>
+                  </div>
+                </div>
+              </div>
+              <div id="carousel-example" class="carousel slide hidden-xs" data-ride="carousel" data-type="multi">
 
+                <div class="carousel-inner">
+                  <div div class="item active">
+                    <div class="row">
+                      {% for movie in movies %}
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                          <div class="slider-item">
+                            <a href="{% url 'movies:detail' movie.pk %}">
+                              <div class="slider-image">
+                              <img src="https://image.tmdb.org/t/p/w500{{movie.poster_path}}" class="img-responsive" alt="">
+                              </div>
+                              <div class="slider-main-detail">
+                                <div class="slider-detail">
+                                  <div class="product-detail">
+                                    <h5>{{movie.title}}</h5>
+                                    <h5 class="detail-price">{{movie.release_date}}</h5>
+                                  </div>
+                                </div>
+                              
+                                <div class="cart-section">
+                                  <div class="row">
+                                    <div class="col-md-6 col-sm-12 col-xs-6 review">
+                                      <i class="fa fa-star" aria-hidden="true"></i>
+                                      <i class="fa fa-star" aria-hidden="true"></i>
+                                      <i class="fa fa-star" aria-hidden="true"></i>
+                                      <i class="fa fa-star-o" aria-hidden="true"></i>
+                                      <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12 col-xs-6">
+                                      <a href="#" class="AddCart btn btn-info"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Add To Cart</a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </a>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+
+
+
+</body>
+</html>
+
+
+
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
 <!------ Include the above in your HEAD tag ---------->
 
 
 
-<div class="container">
-	<div class="row">
-		<div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
-            <div class="MultiCarousel-inner">
-                <div class="item">
-                  <div class="card">
-                    <img src="{% static 'course-03.jpg' %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                      <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                  </div>
-                </div>
-                <div class="item">
-                  <div class="card">
-                    <img src="{% static 'course-03.jpg' %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                      <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                  </div>
-                </div>
-            </div>
-            <button class="btn btn-primary leftLst"><</button>
-            <button class="btn btn-primary rightLst">></button>
-        </div>
-	</div>
-  <div class="row">
-	    <div class="col-md-12 text-center">
-	        <br/><br/><br/>
-	        <hr/>
-	        <p>Settings</p>
-	        <p>Change data items for xs,sm,md and lg display items respectively. Ex:data-items="1,3,5,6"</p>
-	        <p>Change data slide for slides per click Ex:data-slide="1"</p>
-	    </div>
-	</div> 
-</div>
 
-<script>
-$(document).ready(function () {
-    var itemsMainDiv = ('.MultiCarousel');
-    var itemsDiv = ('.MultiCarousel-inner');
-    var itemWidth = "";
-
-    $('.leftLst, .rightLst').click(function () {
-        var condition = $(this).hasClass("leftLst");
-        if (condition)
-            click(0, this);
-        else
-            click(1, this)
-    });
-
-    ResCarouselSize();
-
-
-
-
-    $(window).resize(function () {
-        ResCarouselSize();
-    });
-
-    //this function define the size of the items
-    function ResCarouselSize() {
-        var incno = 0;
-        var dataItems = ("data-items");
-        var itemClass = ('.item');
-        var id = 0;
-        var btnParentSb = '';
-        var itemsSplit = '';
-        var sampwidth = $(itemsMainDiv).width();
-        var bodyWidth = $('body').width();
-        $(itemsDiv).each(function () {
-            id = id + 1;
-            var itemNumbers = $(this).find(itemClass).length;
-            btnParentSb = $(this).parent().attr(dataItems);
-            itemsSplit = btnParentSb.split(',');
-            $(this).parent().attr("id", "MultiCarousel" + id);
-
-
-            if (bodyWidth >= 1200) {
-                incno = itemsSplit[3];
-                itemWidth = sampwidth / incno;
-            }
-            else if (bodyWidth >= 992) {
-                incno = itemsSplit[2];
-                itemWidth = sampwidth / incno;
-            }
-            else if (bodyWidth >= 768) {
-                incno = itemsSplit[1];
-                itemWidth = sampwidth / incno;
-            }
-            else {
-                incno = itemsSplit[0];
-                itemWidth = sampwidth / incno;
-            }
-            $(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers });
-            $(this).find(itemClass).each(function () {
-                $(this).outerWidth(itemWidth);
-            });
-
-            $(".leftLst").addClass("over");
-            $(".rightLst").removeClass("over");
-
-        });
-    }
-
-
-    //this function used to move the items
-    function ResCarousel(e, el, s) {
-        var leftBtn = ('.leftLst');
-        var rightBtn = ('.rightLst');
-        var translateXval = '';
-        var divStyle = $(el + ' ' + itemsDiv).css('transform');
-        var values = divStyle.match(/-?[\d\.]+/g);
-        var xds = Math.abs(values[4]);
-        if (e == 0) {
-            translateXval = parseInt(xds) - parseInt(itemWidth * s);
-            $(el + ' ' + rightBtn).removeClass("over");
-
-            if (translateXval <= itemWidth / 2) {
-                translateXval = 0;
-                $(el + ' ' + leftBtn).addClass("over");
-            }
-        }
-        else if (e == 1) {
-            var itemsCondition = $(el).find(itemsDiv).width() - $(el).width();
-            translateXval = parseInt(xds) + parseInt(itemWidth * s);
-            $(el + ' ' + leftBtn).removeClass("over");
-
-            if (translateXval >= itemsCondition - itemWidth / 2) {
-                translateXval = itemsCondition;
-                $(el + ' ' + rightBtn).addClass("over");
-            }
-        }
-        $(el + ' ' + itemsDiv).css('transform', 'translateX(' + -translateXval + 'px)');
-    }
-
-    //It is used to get some elements from btn
-    function click(ell, ee) {
-        var Parent = "#" + $(ee).parent().attr("id");
-        var slide = $(Parent).attr("data-slide");
-        ResCarousel(ell, Parent, slide);
-    }
-
-});
-</script>
   
 {% endblock %}

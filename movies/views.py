@@ -30,14 +30,19 @@ def home(request):
 @require_safe
 def index(request):
     # 흥행작
-    popular_movies = Movie.objects.order_by('-popularity')[:8]
+    popular_movies = Movie.objects.order_by('-popularity')[:4]
+    popular_movies_2 = Movie.objects.order_by('-popularity')[4:8]
     
     # 장르별 영화 추천(장르별로 장르가 들어간 영화 dict형태로 list에 추가)
     genres = Genre.objects.all()
     genre_movies = []
+    genre_movies_2 = []
     for genre in genres:
         genre_movies.append({
-            genre.name: Movie.objects.filter(genre_ids__in=[genre.id])[:5]
+            genre.name: Movie.objects.filter(genre_ids__in=[genre.id])[:4]
+        })
+        genre_movies_2.append({
+            genre.name: Movie.objects.filter(genre_ids__in=[genre.id])[4:8]
         })
 
     # 내 취향 장르 기반
@@ -50,17 +55,21 @@ def index(request):
             like_movie_genres = top_review.movie.genre_ids.all()  # 리뷰 높은 영화의 장르들
             for like_movie_genre in like_movie_genres: 
                 rec_movie_genres.append({
-                    like_movie_genre.name: Movie.objects.filter(genre_ids__in=[like_movie_genre.id])
+                    like_movie_genre.name: Movie.objects.filter(genre_ids__in=[like_movie_genre.id])[:8]
                 })
+            
         else: # 작성한 리뷰 없는 경우 평점순
-            rated_movies = Movie.objects.order_by('-vote_average')
+            rated_movies = Movie.objects.order_by('-vote_average')[:8]
     else: # 로그인 안 한 경우 평점순
-        rated_movies = Movie.objects.order_by('-vote_average')
+        rated_movies = Movie.objects.order_by('-vote_average')[:8]
     context = {
         'popular_movies': popular_movies,
+        'popular_movies_2': popular_movies_2,
         'genre_movies': genre_movies,
+        'genre_movies_2': genre_movies_2,
         'rec_movie_genres': rec_movie_genres,
-        'rated_movies': rated_movies,
+        'rated_movies': rated_movies[:4],
+        'rated_movies_2': rated_movies[4:8],
     }
     return render(request, 'movies/index.html', context)
 

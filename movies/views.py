@@ -36,13 +36,9 @@ def index(request):
     # 장르별 영화 추천(장르별로 장르가 들어간 영화 dict형태로 list에 추가)
     genres = Genre.objects.all()
     genre_movies = []
-    genre_movies_2 = []
     for genre in genres:
         genre_movies.append({
-            genre.name: Movie.objects.filter(genre_ids__in=[genre.id])[:4]
-        })
-        genre_movies_2.append({
-            genre.name: Movie.objects.filter(genre_ids__in=[genre.id])[4:8]
+            genre.name: Movie.objects.filter(genre_ids__in=[genre.id])[:8]
         })
 
     # 내 취향 장르 기반
@@ -57,16 +53,15 @@ def index(request):
                 rec_movie_genres.append({
                     like_movie_genre.name: Movie.objects.filter(genre_ids__in=[like_movie_genre.id])[:8]
                 })
-            
         else: # 작성한 리뷰 없는 경우 평점순
             rated_movies = Movie.objects.order_by('-vote_average')[:8]
     else: # 로그인 안 한 경우 평점순
         rated_movies = Movie.objects.order_by('-vote_average')[:8]
+
     context = {
         'popular_movies': popular_movies,
         'popular_movies_2': popular_movies_2,
         'genre_movies': genre_movies,
-        'genre_movies_2': genre_movies_2,
         'rec_movie_genres': rec_movie_genres,
         'rated_movies': rated_movies[:4],
         'rated_movies_2': rated_movies[4:8],
@@ -79,11 +74,18 @@ def index(request):
 def detail(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
     # genres = movie.movie_genre.all()  #역참조 / genre가 선택된 것이 여러개가 있을 수 있으므로! / 중개테이블 안에 있는 것을 모두 들고옴 / 여러개의 장르들! for문
-    genre_ids = movie.genre_ids.all()  
+    genre_ids = movie.genre_ids.all() 
+    # 같은 장르 영화 추천하기
+    genre_movies = []
+    for genre in genre_ids:
+        genre_movies.append({
+            genre.name: Movie.objects.filter(genre_ids__in=[genre.id])[:4]
+        }) 
     reviews = movie.reviews.all()
     context = {
         'movie':movie,
         'genre_ids':genre_ids,
+        'genre_movies': genre_movies,
         'reviews': reviews,
     }
     return render(request, 'movies/detail.html', context)

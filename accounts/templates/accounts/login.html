@@ -3,13 +3,66 @@
 {% load socialaccount %}
 
 {% block content %}
-<h1>로그인</h1>
+{% comment %} <h1>로그인</h1>
 <form action="" method="POST">
   {% csrf_token %}
   {{ form.as_p }}
   <input type="submit">
 </form>
 <a href="{% provider_login_url 'google' next="/movies/" %}">구글 로그인</a>
-<a href="{% provider_login_url 'naver' next="/movies/" %}">네이버 로그인</a>
+<a href="{% provider_login_url 'naver' next="/movies/" %}">네이버 로그인</a> {% endcomment %}
+
+{% comment %} 
+
+<!-- Modal -->
+<div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-5 shadow">
+      <div class="modal-header p-5 pb-4 border-bottom-0">
+        <h5 class="modal-title fw-bold mb-0" id="loginModalLabel">Login</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-5 pt-0">
+        <form class="" action="{% url 'accounts:login' %}" method="POST">
+          {% csrf_token %}
+          <div class="form-floating mb-3">
+            <input name="username" maxlength="150" autocapitalize="none" autocomplete="username" autofocus required id="id_username" type="text" class="form-control rounded-4" id="floatingInput" placeholder="user id">
+            <label for="id_username">ID</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input name="password" autocomplete="new-password" required id="id_password" type="password" class="form-control rounded-4" id="floatingPassword" placeholder="Password">
+            <label for="id_password">Password</label>
+          </div>
+          <button class="w-100 mb-2 btn btn-lg rounded-4 btn-primary" type="submit">Login</button>
+          <small class="text-muted">By clicking Sign up, you agree to the terms of use.</small>
+          <hr class="my-4">
+          <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
+          <button class="w-100 py-2 mb-2 btn btn-outline-dark rounded-4">
+            <svg class="bi me-1" width="16" height="16"><use xlink:href="#google"></use></svg> 
+            <a href="{% provider_login_url 'google' next="/movies/" %}">Login with Google</a>
+          </button>
+          <button class="w-100 py-2 mb-2 btn btn-outline-primary rounded-4" type="submit">
+            <svg class="bi me-1" width="16" height="16"><use xlink:href="#naver"></use></svg>
+            <a href="{% provider_login_url 'naver' next="/movies/" %}">Login with Naver</a>
+          </button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+ {% endcomment %}
+
+
+
+
+
+
+
 
 {% endblock  %}

@@ -7,10 +7,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
   <!-- Core theme CSS (includes Bootstrap)-->
   <link href="css/styles.css" rel="stylesheet" />
-  <style>
-  
-
-  </style>
 {% endblock CSS %}
 
 
@@ -71,80 +67,27 @@
 
 
   
-    <body class="d-flex flex-column">
-        <main class="flex-shrink-0 px-5 ">
+    <body class="d-flex flex-column h-100">
+        <main class="flex-shrink-0">
+            <!-- Navigation-->
+
             <!-- Header-->
-            <header class="pt-5">
+            <header class="bg-dark py-5">
               <div class="container px-5">
-                <div class="row gx-5 align-items-top justify-content-center">
-                <!-- Header : 이미지 -->
-                  <div class="col-md-6 col-lg-5 col-xl-4 col-xxl-4 mb-5"><img class="img-fluid rounded-3 " src="https://image.tmdb.org/t/p/w780{{movie.poster_path}}" alt="..." /></div>
-                  <div class="col-md-6 col-lg-7 col-xl-8 col-xxl-8">
-                    <div class="">
-                      <h1 class="fw-bolder mb-4" id="movieTitle">{{ movie.title }}</h1>
-                      
-                      <!-- Header : 기본 정보-->
-                        <div class="detail_cont">
-                          <div class="inner_cont">
-                            <dl class="list_cont">
-                                    <dt>개봉</dt>
-                                <dd>{{ movie.release_date }}</dd>
-                            </dl>
-                            <dl class="list_cont">
-                              <dt>장르</dt>
-                              <dd>
-                                {% for genre in genre_ids %}
-                                  <span>{{ genre.name }} |</span>
-                                {% endfor %}
-                              </dd>
-                            </dl>
-                              <dl class="list_cont">
-                              <dt>평점</dt>
-                              <dd><span class="ico_movie ico_star"></span>{{ movie.vote_average }}</dd>
-                              </dl>
-                              <dl class="list_cont">
-                                  <dt>누적관객</dt>
-                                  <dd>{{ movie.popularity }}</dd>
-                              </dl>
-                          </div>
-                        </div>
-                      
+                <div class="row gx-5 align-items-center justify-content-center">
+                  <div class="col-lg-8 col-xl-7 col-xxl-6">
+                    <div class="my-5 text-center text-xl-start">
+                      <h1 class="display-5 fw-bolder text-white mb-2" id="movieTitle">{{ movie.title }}</h1>
+                      <p class="lead fw-normal text-white-50 mb-4">{{ movie.overview}}</p>
+                      {% for genre in genre_ids %}
+                        <span>{{ genre.name }} |</span>
+                      {% endfor %}
                     </div>
                   </div>
+                  <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="https://image.tmdb.org/t/p/w780{{movie.poster_path}}" alt="..." /></div>
                 </div>
               </div>
             </header>
-
-            <!-- 줄거리 / 트레일러-->
-
-          <div class="pb-5"> 
-            <div class="container px-5">
-              <div class="row gx-5 align-items-top justify-content-center">
-            <!-- 줄거리 -->
-                <div class="col-lg-6 ">
-                  <hr>
-                  <div class="bg-light p-3">
-                    <br>
-                    <h5><b>줄거리</b></h5>
-                    <br>
-                    <div class="">
-                      <p class="lead mb-4 fs-6 ">{{ movie.overview }}</p>
-                    </div>
-                  </div>
-                </div>
-                <!-- 유튜브 트레일러-->
-                <div class="col-lg-6 p-3 mt-5">
-                  <h5 class="fw-bold mt-2 mb-3">관련 영상</h5>
-                  <div class="d-none d-sm-block mb-5 pb-4">
-                    <div id="map" class="d-flex justify-content-center" style="height: 1000px; position: relative; overflow: hidden;"> 
-                        <iframe id="preview" class="embed-responsive-item mx-auto" frameborder="0" allowfullscreen width="560" height="315"></iframe>
-                    </div>
-                  </div>  
-                </div>
-              </div>
-            </div>
-          </div>
-
             <!-- Features section: 리뷰 목록-->
             <section class="py-5 bg-light">
               <div class="container px-5">
@@ -245,7 +188,7 @@
 
 <script>
   // 유튜브 예고편
-  const API_KEY = ''
+  const API_KEY = 'AIzaSyAD5IVkdRMFP0Iqo8xxmBbNM4Z1S2F8GzU'
   const YOUTUBE_URL = 'https://www.googleapis.com/youtube/v3/search'
   const videos = []
   const video = []
